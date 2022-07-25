@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,15 +29,21 @@ public class LanguageController {
 
 	@Autowired
 	private LanguageService languageService;
+	
+	@Value("${spring.data.mongodb.uri}")
+	private String teste;
 
 	@GetMapping("/language/all")
 	public ResponseEntity<List<LanguageDto>> getAllLanguages() {
+		
+		System.out.println(teste);
 		List<LanguageDto> lenguagesDto;
 		try {
 			lenguagesDto = languageService.findAll();
 			return ResponseEntity.ok().body(lenguagesDto);
 
 		} catch (Exception e) {
+			System.out.println(e.getMessage());
 			return ResponseEntity.badRequest().body(null);
 		}
 	}
