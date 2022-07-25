@@ -29,34 +29,29 @@ public class LanguageController {
 
 	@Autowired
 	private LanguageService languageService;
-	
-	@Value("${spring.data.mongodb.uri}")
-	private String teste;
 
 	@GetMapping("/language/all")
 	public ResponseEntity<List<LanguageDto>> getAllLanguages() {
-		
-		System.out.println(teste);
+
 		List<LanguageDto> lenguagesDto;
 		try {
 			lenguagesDto = languageService.findAll();
 			return ResponseEntity.ok().body(lenguagesDto);
 
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
 			return ResponseEntity.badRequest().body(null);
 		}
 	}
-	
+
 	@GetMapping("/language/{id}")
-	public ResponseEntity<LanguageDto> getLanguageById(@PathVariable(name = "id") String languageId){
+	public ResponseEntity<LanguageDto> getLanguageById(@PathVariable(name = "id") String languageId) {
 		try {
 			LanguageDto languageDto = languageService.findById(languageId);
 			return ResponseEntity.ok().body(languageDto);
-		}catch (LanguageException ex) {
+		} catch (LanguageException ex) {
 			return ResponseEntity.notFound().build();
 		}
-		
+
 	}
 
 	@PostMapping("/language")
@@ -75,23 +70,24 @@ public class LanguageController {
 			@PathVariable(name = "id") String languageId) {
 		try {
 			LanguageDto languageDto = languageService.update(languageForm, languageId);
-			
+
 			return ResponseEntity.ok().body(languageDto);
 		} catch (LanguageException ex) {
 			return ResponseEntity.status(204).build();
 		}
 	}
+
 	@DeleteMapping("/language/{id}")
-	public ResponseEntity<Map<String, String>> deleteLanguage(@PathVariable(name = "id") String languageId){
+	public ResponseEntity<Map<String, String>> deleteLanguage(@PathVariable(name = "id") String languageId) {
 		Map<String, String> response = new LinkedHashMap<String, String>();
-		
+
 		try {
 			String deletedLanguageId = languageService.delete(languageId);
-			
+
 			response.put("deleted-language-id", deletedLanguageId);
-			
+
 			return ResponseEntity.ok().body(response);
-		}catch(LanguageException ex) {
+		} catch (LanguageException ex) {
 			response.put("error", ex.getMessage());
 			return ResponseEntity.badRequest().body(response);
 		}
