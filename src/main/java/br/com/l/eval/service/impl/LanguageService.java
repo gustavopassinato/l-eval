@@ -17,34 +17,37 @@ import br.com.l.eval.repository.LanguageRepository;
 @Service
 public class LanguageService {
 
+	private final Integer ZERO_VOTES_TO_NEW_LANGUAGE = 0;
+
 	@Autowired
 	private LanguageRepository languageRepository;
-	
-	
+
 	public LanguageDto create(LanguageForm languageForm) {
-		Language language = languageRepository.save(new Language(languageForm.getName(), languageForm.getImage()));
-		
-		return toDto(language);
+
+		Language languageToSave = new Language(languageForm);
+		languageToSave.setTotalVotes(ZERO_VOTES_TO_NEW_LANGUAGE);
+
+		Language savedLanguage = languageRepository.save(languageToSave);
+
+		return new LanguageDto(savedLanguage);
 	}
-	
 
 	public List<LanguageDto> findAll() {
 		List<Language> languages = languageRepository.findAll();
-		
-		List<LanguageDto> languagesDto = languages.stream().map(language -> 
-			new LanguageDto(language.getId(), language.getName(), language.getImage(), language.getRanking()))
-		.collect(Collectors.toList());
-		
+
+		List<LanguageDto> languagesDto = languages.stream().map(language -> new LanguageDto(language))
+				.collect(Collectors.toList());
+
 		return languagesDto;
-		
+
 	}
 
 	public LanguageDto findById(String id) {
 		Optional<Language> languageOpt = languageRepository.findById(id);
 
 		if (languageOpt.isPresent()) {
-			return toDto(languageOpt.get());
-			
+			return new LanguageDto(languageOpt.get());
+
 		}
 
 		throw new LanguageException("Not found language");
@@ -52,38 +55,32 @@ public class LanguageService {
 	}
 
 	public LanguageDto update(LanguageForm languageForm, String languageId) {
-		Optional<Language> languageOpt = languageRepository.findById(languageId);
 
-		if (languageOpt.isPresent()) {
-			Language language = languageOpt.get();
-
-			language.setName(languageForm.getName());
+		Language updatedLangauge = languageRepository.findById(languageId).map(language -> {
+			language.setCreatorName(languageForm.getCreatorName());
 			language.setImage(languageForm.getImage());
-
-			return toDto(languageRepository.save(language));
-
-		}
-
-		throw new LanguageException("Not found language");
+			language.setName(languageForm.getName());
+			language.setYearCreation(languageForm.getYearCreation());
+			return languageRepository.save(language);
+		}).orElseGet(() -> {
+			return languageRepository.save(new Language(languageForm));
+		});
+		
+		return new LanguageDto(updatedLangauge);
 
 	}
-	
+
 	public String delete(String languageId) {
 		Optional<Language> languageOpt = languageRepository.findById(languageId);
-		
+
 		if (languageOpt.isPresent()) {
 			String id = languageOpt.get().getId();
 			languageRepository.delete(languageOpt.get());
-			
+
 			return id;
 		}
 
 		throw new LanguageException("Not found language");
 	}
-	
-	public LanguageDto toDto(Language language) {
-		LanguageDto languageDto = new LanguageDto(language.getId(), language.getName() , language.getImage(), language.getRanking());
-		
-		return languageDto;
-	}
+
 }

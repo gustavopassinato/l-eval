@@ -1,4 +1,4 @@
-package br.com.l.eval.controller.validation;
+package br.com.l.eval.validation;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -3,6 +3,8 @@ package br.com.l.eval.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import br.com.l.eval.form.LanguageForm;
+
 @Document(collection = "Lenguages")
 public class Language {
 
@@ -10,12 +12,45 @@ public class Language {
 	private String id;
 
 	private String name;
+	private Integer yearCreation;
+	private String creatorName;
 	private String image;
-	private Integer ranking;
+	private Integer totalVotes;
 
-	public Language(String name, String image) {
+	public Language() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public Language(LanguageForm languageForm) {
+
+		this.name = languageForm.getCreatorName();
+		this.yearCreation = languageForm.getYearCreation();
+		this.creatorName = languageForm.getCreatorName();
+		this.image = languageForm.getImage();
+	}
+
+	public void setName(String name) {
 		this.name = name;
+	}
+
+	public void setYearCreation(Integer yearCreation) {
+		this.yearCreation = yearCreation;
+	}
+
+	public void setCreatorName(String creatorName) {
+		this.creatorName = creatorName;
+	}
+
+	public void setImage(String image) {
 		this.image = image;
+	}
+
+	public void setTotalVotes(Integer totalVotes) {
+		this.totalVotes = totalVotes;
+	}
+
+	public Integer getYearCreation() {
+		return yearCreation;
 	}
 
 	public String getId() {
@@ -26,24 +61,16 @@ public class Language {
 		return name;
 	}
 
+	public String getCreatorName() {
+		return creatorName;
+	}
+
 	public String getImage() {
 		return image;
 	}
 
-	public Integer getRanking() {
-		return ranking;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public void setImage(String image) {
-		this.image = image;
-	}
-
-	public void setRanking(Integer ranking) {
-		this.ranking = ranking;
+	public Integer getTotalVotes() {
+		return totalVotes;
 	}
 
 }
