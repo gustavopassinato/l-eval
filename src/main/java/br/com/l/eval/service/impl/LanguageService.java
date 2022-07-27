@@ -5,11 +5,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import br.com.l.eval.dto.LanguageDto;
 import br.com.l.eval.exceptions.LanguageException;
+import br.com.l.eval.exceptions.VoteException;
 import br.com.l.eval.form.LanguageForm;
 import br.com.l.eval.model.Language;
 import br.com.l.eval.repository.LanguageRepository;
@@ -17,15 +17,12 @@ import br.com.l.eval.repository.LanguageRepository;
 @Service
 public class LanguageService {
 
-	private final Integer ZERO_VOTES_TO_NEW_LANGUAGE = 0;
-
 	@Autowired
 	private LanguageRepository languageRepository;
 
 	public LanguageDto create(LanguageForm languageForm) {
 
 		Language languageToSave = new Language(languageForm);
-		languageToSave.setTotalVotes(ZERO_VOTES_TO_NEW_LANGUAGE);
 
 		Language savedLanguage = languageRepository.save(languageToSave);
 
@@ -65,7 +62,7 @@ public class LanguageService {
 		}).orElseGet(() -> {
 			return languageRepository.save(new Language(languageForm));
 		});
-		
+
 		return new LanguageDto(updatedLangauge);
 
 	}
@@ -81,6 +78,16 @@ public class LanguageService {
 		}
 
 		throw new LanguageException("Not found language");
+	}
+
+	public void updateLanguageVotes(String languageId) {
+
+		languageRepository.findById(languageId).map(language -> {
+			language.increaseVotes();
+			return languageRepository.save(language);
+		}).orElseGet(() -> {
+			throw new VoteException("Error saving vote");
+		});
 	}
 
 }

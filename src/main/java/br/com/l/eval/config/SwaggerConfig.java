@@ -1,10 +1,14 @@
 package br.com.l.eval.config;
 
+import java.util.Collections;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -19,7 +23,19 @@ public class SwaggerConfig {
           .apis(RequestHandlerSelectors.basePackage("br.com.l.eval.controller"))
           .paths(PathSelectors.any())
           .build()
-          .useDefaultResponseMessages(false);
+          .apiInfo(getApiInformation());
+    }
+    
+    private ApiInfo getApiInformation(){
+        return new ApiInfo("LevaL API",
+                "This API was developed on the imersion program ofered by Alura",
+                "1.0",
+                "API Terms of Service URL",
+                new Contact("Gustavo Passinato", "https://github.com/gustavopassinato/l-eval", "passinato11@gmail.com"),
+                "API License",
+                "API License URL",
+                Collections.emptyList()
+                );
     }
 }
 

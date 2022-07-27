@@ -27,6 +27,7 @@ public class Language {
 		this.yearCreation = languageForm.getYearCreation();
 		this.creatorName = languageForm.getCreatorName();
 		this.image = languageForm.getImage();
+		this.totalVotes = 0;
 	}
 
 	public void setName(String name) {
@@ -45,8 +46,8 @@ public class Language {
 		this.image = image;
 	}
 
-	public void setTotalVotes(Integer totalVotes) {
-		this.totalVotes = totalVotes;
+	public void increaseVotes() {
+		this.totalVotes +=1;
 	}
 
 	public Integer getYearCreation() {
